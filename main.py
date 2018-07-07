@@ -18,28 +18,6 @@ def index():
 	return "Hello world"
 
 
-@app.route('/form',methods=['GET','POST'])
-def form():
-	if request.method=='POST':
-		myname=request.form['name']
-
-		#bt=request.['email']
-		#print(email)
-		print("###############")
-		print(myname)
-		print("###############")
-		return redirect(url_for('form_submit',myname = myname))
-	return render_template('form.html')
-
-@app.route('/success1')
-def form_submit():
-	myname = request.args.get('name')
-	print("_____________________________________")
-	print(myname)
-	print("_____________________________________")
-
-	return render_template("success.html",myname=myname)
-
 
 class Post(db.Model):
 	id=db.Column(db.Integer,primary_key=True)
