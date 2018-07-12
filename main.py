@@ -1,10 +1,18 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template,json,jsonify
 
 from flask_sqlalchemy import SQLAlchemy
+
+from flask_cors import CORS
+
+
+
 
 
 
 app=Flask(__name__)
+
+CORS(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:rohith@localhost:5432/newdb'
 app.config['SECRET_KEY'] = 'nrkjngy789y78%^&&&'
@@ -62,8 +70,34 @@ def post_suc():
 def articles():
 	all_articles=Post.query.all()
 
-	return render_template("articles.html",articles=all_articles)
+	print(all_articles)
 
+	return render_template("articles.html",articles=all_articles)
+@app.route('/authors/<author_name>',methods=['GET'])
+def authors(author_name):
+	author_con=Post.query.filter(Post.author ==author_name).all()
+	print(author_con)
+
+	return render_template("articles.html",articles=author_con)
+
+
+@app.route('/api/<subject>')
+def api_call(subject):
+	articles=Post.query.filter(Post.subject==subject).all()
+
+	output=[]
+
+	for article in articles:
+		art_dict={}
+		art_dict['title']=article.title
+		art_dict['text']=article.text
+		art_dict['author']=article.author
+		art_dict['subject']=article.subject
+		output.append(art_dict)
+
+	return jsonify(output)
+
+	
 
 
 
